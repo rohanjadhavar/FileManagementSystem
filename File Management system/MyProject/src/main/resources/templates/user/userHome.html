@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Home</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 20px;
+    }
+    .header h2 {
+      margin: 0;
+    }
+    .table-container {
+      margin: 20px;
+    }
+    .upload-btn {
+      margin-right: 10px;
+    }
+    input {
+      border: none;
+      outline: none;
+      background: transparent;
+    }
+    .toggle-btn {
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header Section -->
+  <div class="header">
+    <h2>User Home</h2>
+    <a th:href="@{/user/uploadFile}" class="btn btn-primary upload-btn">Upload New File</a>
+  </div>
+
+  <!-- Table Section -->
+  <div class="table-container">
+    <table class="table table-bordered table-hover">
+      <thead class="thead-dark">
+        <tr>
+          <th>File Name</th>
+          <th>Secret Code</th>
+          <th>Upload Date</th>
+          <th>File Size</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Example Rows -->
+        <tr th:each="file : ${files}">
+          <td th:text="${file.Filename}">example1.pdf</td>
+          <td>
+            <input th:value="${file.SecretCode}" readonly="readonly" type="password" th:id="${'passwordInput_'+file.id}" placeholder="Enter text">
+            <button type="button" class="toggle-btn" th:onclick="|toggleInputType(${file.id})|">
+              👁️
+            </button>
+          </td>
+          <td th:text="${file.date}">2024-10-25</td>
+          <td th:text="${file.size + ' MB'}">1.2 MB</td>
+          <td>
+          
+            <button class="btn btn-success btn-sm" th:onclick="|downloadFile(${file.SecretCode},${file.id})|">Download</button>
+            <a th:href="@{'/user/deleteFile/'+${file.id}}" class="btn btn-danger btn-sm" >Delete</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Bootstrap JS and dependencies -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  
+  <script>
+    // JavaScript functions for upload, download, and delete actions
+    function downloadFile(code, id) {
+      const SecretCode = prompt("Please enter Secret Code text:");
+
+      if (SecretCode == null) {
+          alert("You did not provide the code.");
+      } else if (SecretCode == code) {
+          alert("File Downloading...");
+          
+          // Create a download link dynamically
+          const downloadLink = document.createElement('a');
+          
+          // Set the file URL (adjust the URL to point to your file download endpoint)
+          downloadLink.href = "/user/downloadFile/" + id;  // Assuming your download endpoint is correct
+          
+          // Set the download attribute to suggest a filename (optional)
+          downloadLink.download = "downloaded_file";  // You can customize the file name here
+          
+          // Append the link to the body (it needs to be part of the DOM to trigger a click)
+          document.body.appendChild(downloadLink);
+          
+          // Programmatically trigger a click on the link to start the download
+          downloadLink.click();
+          
+          // Remove the link after the download has been triggered
+          document.body.removeChild(downloadLink);
+      } else {
+          alert("Wrong Code");
+      }
+    }
+
+    function deleteFile(fileName) {
+      // Implement delete logic, possibly using an API call
+      alert("Deleting " + fileName);
+    }
+
+    // Function to toggle password visibility for a specific file
+    function toggleInputType(fileId) {
+      const input = document.getElementById(`passwordInput_${fileId}`);
+      const isPassword = input.type === "password";
+      input.type = isPassword ? "text" : "password";
+    }
+  </script>
+
+</body>
+</html>

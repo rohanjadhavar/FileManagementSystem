@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload File</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5  p-3 ">
+       <div style="width: fit-content;" class="border p-3 bg-info m-auto">
+       	 <h2>Upload File</h2>
+        <form th:action="@{/user/uploadFileProcess}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="file">Choose file to upload:</label>
+                <input type="file" class="form-control-file" id="file" name="file" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+       </div>
+    </div>
+</body>
+</html>
